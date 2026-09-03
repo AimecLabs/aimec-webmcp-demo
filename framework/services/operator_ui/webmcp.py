@@ -40,6 +40,47 @@ def _require_identifier(value: Any, label: str) -> str:
     return result
 
 
+def _resolve_capability_record(
+    records: list[dict[str, Any]],
+    *,
+    kind: str,
+    capability_id: str,
+    operation_id: str,
+) -> dict[str, Any] | None:
+    """Resolve a registry ID, or its unambiguous operation capability alias.
+
+    Discovery exposes a durable registry record ID and the semantic capability
+    carried by each operation.  WebMCP callers commonly select the latter, so
+    retain the registry ID as the canonical execution identity while accepting
+    either value at the public boundary.
+    """
+    direct = next(
+        (
+            record for record in records
+            if record.get("id") == capability_id and record.get("kind") == kind
+        ),
+        None,
+    )
+    if direct is not None:
+        return direct
+
+    aliases = [
+        record
+        for record in records
+        if record.get("kind") == kind
+        and capability_id in (record.get("capabilities") or [])
+        and any(
+            isinstance(operation, dict)
+            and operation.get("id") == operation_id
+            and operation.get("capability") == capability_id
+            for operation in record.get("operations") or []
+        )
+    ]
+    if len(aliases) > 1:
+        raise WebMcpError(409, "ambiguous_capability_reference")
+    return aliases[0] if aliases else None
+
+
 def _request_json(
     method: str,
     url: str,
@@ -118,12 +159,14 @@ class AlphaWebMcpAdapter:
                     "id": operation.get("id"),
                     "action": operation.get("action"),
                     "capability": operation.get("capability"),
+                    "invocation_capability_id": record.get("id"),
                     "input_schema": operation.get("input_schema") or {},
                     "output_schema": operation.get("output_schema") or {},
                     "timeout_seconds": operation.get("timeout_seconds"),
                 })
             tools.append({
                 "id": record.get("id"),
+                "invocation_capability_id": record.get("id"),
                 "display_name": record.get("display_name"),
                 "version": record.get("version"),
                 "capabilities": list(record.get("capabilities") or []),
@@ -143,7 +186,12 @@ class AlphaWebMcpAdapter:
         tool_input = payload.get("input", {})
         if not isinstance(tool_input, dict):
             raise WebMcpError(400, "invalid_tool_input")
-        record = next((item for item in self._catalog() if item.get("id") == capability_id), None)
+        record = _resolve_capability_record(
+            self._catalog(),
+            kind="tool",
+            capability_id=capability_id,
+            operation_id=operation_id,
+        )
         if (
             record is None
             or record.get("kind") != "tool"

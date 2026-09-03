@@ -8,7 +8,13 @@ from urllib.request import Request
 from uuid import uuid4
 
 from aimec_task_store import TaskConflict, TaskLimit, now
-from webmcp import WebMcpError, _redact, _request_json, _require_identifier
+from webmcp import (
+    WebMcpError,
+    _redact,
+    _request_json,
+    _require_identifier,
+    _resolve_capability_record,
+)
 
 
 DEMO_CAPABILITIES = frozenset({
@@ -74,9 +80,18 @@ class CapabilityJobs:
                 continue
             if health.get("healthy") is not True:
                 continue
+            operations = []
+            for operation in record["operations"]:
+                if not isinstance(operation, dict):
+                    continue
+                operations.append({
+                    **operation,
+                    "invocation_capability_id": record["id"],
+                })
             agents.append({
                 "id": record["id"], "name": record["display_name"], "state": "online", "approval": "approved",
-                "version": record["version"], "capabilities": record["capabilities"], "operations": record["operations"],
+                "invocation_capability_id": record["id"],
+                "version": record["version"], "capabilities": record["capabilities"], "operations": operations,
                 "execution": "tool-grounded local Qwen inference via Ollama; public or synthetic planning inputs only",
             })
         agents.sort(key=lambda item: item["id"])
@@ -98,7 +113,12 @@ class CapabilityJobs:
         supplied = payload["input"]
         if not isinstance(supplied, dict):
             raise WebMcpError(400, "invalid_tool_input")
-        record = next((r for r in self.catalog(kind) if r["id"] == capability_id), None)
+        record = _resolve_capability_record(
+            self.catalog(kind),
+            kind=kind,
+            capability_id=capability_id,
+            operation_id=operation_id,
+        )
         if record is None:
             raise WebMcpError(404, "approved_capability_not_found")
         operation = next((o for o in record.get("operations", []) if isinstance(o, dict) and o.get("id") == operation_id), None)
@@ -107,7 +127,18 @@ class CapabilityJobs:
             raise WebMcpError(404, "approved_operation_not_found")
         request_key = _require_identifier(payload.get("request_id", uuid4().hex), "request_id")
         try:
-            job, created = self.store.begin(owner, kind, capability_id, operation_id, supplied, request_key)
+            # The semantic operation capability is accepted at the WebMCP
+            # boundary, but the registry only executes its canonical record
+            # ID.  Persist that canonical identity as well so the later job
+            # runner cannot forward an alias upstream.
+            job, created = self.store.begin(
+                owner,
+                kind,
+                record["id"],
+                operation_id,
+                supplied,
+                request_key,
+            )
         except TaskLimit as exc:
             raise WebMcpError(429, str(exc)) from exc
         except TaskConflict as exc:
