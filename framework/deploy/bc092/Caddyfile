@@ -1,0 +1,30 @@
+{
+    admin off
+    servers {
+        timeouts {
+            read_header 10s
+            read_body 15s
+            write 30s
+            idle 60s
+        }
+    }
+}
+
+{$AIMEC_DEMO_HOSTNAME} {
+    request_body {
+        max_size 64KB
+    }
+    header {
+        Strict-Transport-Security "max-age=86400"
+        -Server
+    }
+    reverse_proxy alpha:8000 {
+        health_uri /health
+        health_interval 10s
+        unhealthy_request_count 32
+        transport http {
+            dial_timeout 3s
+            response_header_timeout 15s
+        }
+    }
+}

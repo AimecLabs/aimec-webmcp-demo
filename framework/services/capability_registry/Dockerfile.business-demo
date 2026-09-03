@@ -1,0 +1,10 @@
+FROM python:3.12-slim
+WORKDIR /app
+RUN useradd --create-home --uid 10001 aimec
+COPY framework/common/aimec_http.py framework/common/aimec_capability_registry.py /app/common/
+COPY framework/services/capability_registry/server.py /app/server.py
+COPY framework/scripts/bootstrap_bc094_demo.py /app/bootstrap.py
+COPY framework/registry/capabilities/business-diagnostics.tool.json framework/registry/capabilities/ai-opportunity-analyst.agent.json framework/registry/capabilities/ai-solution-architect.agent.json /app/manifests/
+ENV PYTHONPATH=/app/common PYTHONUNBUFFERED=1 AIMEC_CAPABILITY_REGISTRY_DB=/state/capabilities.json
+USER 10001:10001
+CMD ["python", "/app/server.py"]

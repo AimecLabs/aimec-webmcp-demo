@@ -1,0 +1,16 @@
+FROM python:3.12-slim
+WORKDIR /app
+RUN useradd --create-home --uid 10001 aimec
+COPY framework/common/aimec_http.py framework/common/aimec_capability_registry.py /app/common/
+COPY framework/services/business_advisory/server.py framework/services/business_advisory/capability.py /app/
+COPY framework/registry/capabilities/business-diagnostics.tool.json framework/registry/capabilities/ai-opportunity-analyst.agent.json framework/registry/capabilities/ai-solution-architect.agent.json /app/manifests/
+# Competition hotfix for CPU-only local inference: disable Qwen thinking, cap generation,
+# and allow each Ollama call enough time to complete within the outer A2A budget.
+RUN sed -i 's/"format": "json",/"format": "json",\n        "think": False,/' /app/capability.py \
+    && sed -i 's/"num_predict": 1200/"num_predict": 450/' /app/capability.py \
+    && sed -i 's/urlopen(request, timeout=150)/urlopen(request, timeout=300)/' /app/capability.py \
+    && sed -i 's/os.getenv("AIMEC_LLM_MODEL", "qwen3:4b")/os.getenv("AIMEC_LLM_MODEL", "qwen3:1.7b")/' /app/capability.py
+ENV PYTHONPATH=/app/common PYTHONUNBUFFERED=1 AIMEC_BUSINESS_MANIFEST_DIR=/app/manifests \
+    AIMEC_LLM_BASE_URL=http://ollama:11434 AIMEC_LLM_MODEL=qwen3:1.7b
+USER 10001:10001
+CMD ["python", "/app/server.py"]

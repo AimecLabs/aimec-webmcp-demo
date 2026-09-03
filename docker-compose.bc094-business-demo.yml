@@ -1,0 +1,141 @@
+# BC-094: isolated WebMCP business-agent demo with local Qwen inference.
+x-runtime: &runtime
+  restart: unless-stopped
+  read_only: true
+  tmpfs: [/tmp]
+  cap_drop: [ALL]
+  security_opt: [no-new-privileges:true]
+  pids_limit: 128
+  mem_limit: 512m
+  cpus: 1.0
+  networks: [demo-internal]
+  healthcheck:
+    test: [CMD, python, -c, "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/health',timeout=2)"]
+    interval: 3s
+    timeout: 3s
+    retries: 40
+    start_period: 3s
+services:
+  volume-init:
+    image: alpine:3.20
+    network_mode: none
+    command: [sh, -c, "chown 10001:10001 /registry /jobs /events /acceptance"]
+    volumes: [bc094-registry:/registry, bc094-jobs:/jobs, bc094-events:/events, bc094-acceptance:/acceptance]
+    cap_drop: [ALL]
+    cap_add: [CHOWN]
+    security_opt: [no-new-privileges:true]
+    read_only: true
+  model-init:
+    image: ollama/ollama:latest
+    entrypoint: ["/bin/sh", "-c"]
+    command:
+      - >
+        set -eu;
+        ollama serve >/tmp/ollama-init.log 2>&1 &
+        pid=$$!;
+        trap 'kill "$$pid" 2>/dev/null || true' EXIT;
+        until ollama list >/dev/null 2>&1; do sleep 1; done;
+        ollama pull "$${AIMEC_LLM_MODEL}";
+        kill "$$pid";
+        wait "$$pid" 2>/dev/null || true
+    environment:
+      AIMEC_LLM_MODEL: ${AIMEC_LLM_MODEL:-qwen3:1.7b}
+    volumes: [bc094-ollama:/root/.ollama]
+    networks: [model-egress]
+    restart: "no"
+  ollama:
+    image: ollama/ollama:latest
+    restart: unless-stopped
+    read_only: true
+    tmpfs: [/tmp]
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    pids_limit: 256
+    mem_limit: ${AIMEC_OLLAMA_MEMORY:-4g}
+    cpus: ${AIMEC_OLLAMA_CPUS:-2.0}
+    volumes: [bc094-ollama:/root/.ollama]
+    networks: [demo-internal]
+    depends_on:
+      model-init: {condition: service_completed_successfully}
+    healthcheck:
+      test: [CMD, ollama, list]
+      interval: 5s
+      timeout: 5s
+      retries: 60
+      start_period: 5s
+  registry-init:
+    build:
+      context: .
+      dockerfile: framework/services/capability_registry/Dockerfile.business-demo
+    command: [python, /app/bootstrap.py]
+    environment:
+      AIMEC_ISOLATED_DEMO_BOOTSTRAP: "1"
+    volumes: [bc094-registry:/state]
+    network_mode: none
+    read_only: true
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    depends_on:
+      volume-init: {condition: service_completed_successfully}
+  business-advisory:
+    <<: *runtime
+    build:
+      context: .
+      dockerfile: framework/services/business_advisory/Dockerfile.demo
+    environment:
+      AIMEC_PORT: "8000"
+      AIMEC_EVENT_DB: /events/executions.sqlite3
+      AIMEC_LOG_DIR: /tmp/logs
+      AIMEC_LLM_BASE_URL: http://ollama:11434
+      AIMEC_LLM_MODEL: ${AIMEC_LLM_MODEL:-qwen3:1.7b}
+    volumes: [bc094-events:/events]
+    depends_on:
+      volume-init: {condition: service_completed_successfully}
+      ollama: {condition: service_healthy}
+  capability-registry:
+    <<: *runtime
+    build:
+      context: .
+      dockerfile: framework/services/capability_registry/Dockerfile.business-demo
+    environment:
+      AIMEC_PORT: "8000"
+      AIMEC_CAPABILITY_BUSINESS_DIAGNOSTICS_URL: http://business-advisory:8000
+      AIMEC_CAPABILITY_AI_OPPORTUNITY_ANALYST_URL: http://business-advisory:8000
+      AIMEC_CAPABILITY_AI_SOLUTION_ARCHITECT_URL: http://business-advisory:8000
+      AIMEC_EVENT_DB: /events/executions.sqlite3
+      AIMEC_LOG_DIR: /tmp/logs
+      AIMEC_CAPABILITY_APPROVAL_TOKEN: ""
+    volumes: [bc094-registry:/state, bc094-events:/events]
+    depends_on:
+      registry-init: {condition: service_completed_successfully}
+      business-advisory: {condition: service_healthy}
+  alpha:
+    <<: *runtime
+    build:
+      context: .
+      dockerfile: framework/services/operator_ui/Dockerfile.demo
+    environment:
+      AIMEC_PORT: "8000"
+      AIMEC_CAPABILITY_REGISTRY_URL: http://capability-registry:8000
+      AIMEC_WEBMCP_JOB_DB: /jobs/capability-jobs.sqlite3
+      AIMEC_EVENT_DB: /events/executions.sqlite3
+      AIMEC_LLM_MODEL: ${AIMEC_LLM_MODEL:-qwen3:1.7b}
+      AIMEC_DEMO_SOURCE_COMMIT: ${AIMEC_DEMO_SOURCE_COMMIT:-unrecorded}
+    volumes: [bc094-jobs:/jobs, bc094-events:/events, bc094-acceptance:/acceptance]
+    networks: [demo-internal, demo-ingress]
+    ports:
+      - "${AIMEC_DEMO_PORT:-127.0.0.1:8020}:8000"
+    depends_on:
+      capability-registry: {condition: service_healthy}
+networks:
+  demo-internal:
+    internal: true
+  demo-ingress:
+    driver: bridge
+  model-egress:
+volumes:
+  bc094-registry:
+  bc094-jobs:
+  bc094-events:
+  bc094-acceptance:
+  bc094-ollama:

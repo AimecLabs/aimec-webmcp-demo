@@ -1,0 +1,203 @@
+{
+  "schema_version": "1.0",
+  "upstream_commit": "fc425bcbb146a4186ebf26edf7e96d80acd5fa21",
+  "scope": "Demo-only export; excludes this manifest, caches and Git history. Hashes record bytes, not legal ownership or a security audit.",
+  "files": {
+    ".dockerignore": {
+      "sha256": "ef2f4fb98e61abcd7e57786b92c2b5a6730cde8e4fbcfbc36b18088c089b7274",
+      "upstream_git_blob": null,
+      "status": "added_for_public_export"
+    },
+    ".gitignore": {
+      "sha256": "b688e2253caa2f9a8bc679b8c533513105d169f240a9277e17d4d8c7c0da2ace",
+      "upstream_git_blob": null,
+      "status": "added_for_public_export"
+    },
+    "LICENSE": {
+      "sha256": "a3d00b397e58d997e0099f8ad5f644ec48e360f1e33ac8c867d2ed90c6109227",
+      "upstream_git_blob": null,
+      "status": "added_for_public_export"
+    },
+    "PROVENANCE.md": {
+      "sha256": "c207fdbb0b854e8bf1935bde0a8ee217f936c5c576f582913bafeabf7984c5df",
+      "upstream_git_blob": null,
+      "status": "added_for_public_export"
+    },
+    "README.md": {
+      "sha256": "44461b76f1c821ed0ad3ed6461f7f39ab6c7c172e54929b00a5e700fc6c1b21c",
+      "upstream_git_blob": null,
+      "status": "added_for_public_export"
+    },
+    "THIRD_PARTY_NOTICES.md": {
+      "sha256": "8af3aa347dc483dc312985343c9dbe623dc5e10a2615fde07b39a6139cbfc823",
+      "upstream_git_blob": null,
+      "status": "added_for_public_export"
+    },
+    "docker-compose.bc094-business-demo.yml": {
+      "sha256": "d253fd5c8d325cb456209701b4bdb363f5956b4da0927556784592924c9c5f27",
+      "upstream_git_blob": "84160d204882f317961e57fd95abc8e576e76cf2",
+      "status": "modified_for_public_export"
+    },
+    "docs/DEPLOYMENT.md": {
+      "sha256": "dd610ae8794af14dd0e2a0ee4278d1e59ba41591ca068da2ede9779ae7ebee40",
+      "upstream_git_blob": null,
+      "status": "added_for_public_export"
+    },
+    "docs/JUDGE_GUIDE.md": {
+      "sha256": "bb08bcfeb74d36539ddf60c56376759ddf5aadd3da6c09c6c7908d5994757afc",
+      "upstream_git_blob": null,
+      "status": "added_for_public_export"
+    },
+    "docs/TEST_RESULTS.md": {
+      "sha256": "6354dc75add0d60b9bf9214c53dfb5c30f0c34b48c480dea6c4f3bb2be3e8d67",
+      "upstream_git_blob": null,
+      "status": "added_for_public_export"
+    },
+    "docs/webmcp-check.js": {
+      "sha256": "c42322b77c5033a2b52be468818757e0aec4923a356cdf8de6dadb8fdcf93bb1",
+      "upstream_git_blob": null,
+      "status": "added_for_public_export"
+    },
+    "framework/common/aimec_capability_registry.py": {
+      "sha256": "e8612c4b93e64efa1285b655eb69095043e19f1c370bf6846aca9d1e52c37baa",
+      "upstream_git_blob": "8b830c469fba69ae1e23c9747473f895f75aa84b",
+      "status": "unchanged"
+    },
+    "framework/common/aimec_http.py": {
+      "sha256": "0b058c0018cdab73d0b29c31875adc5099dbea80153c5698375e89afe1e20607",
+      "upstream_git_blob": "2204e6c65790b87bf3852aaab20634ccb3d43cf2",
+      "status": "unchanged"
+    },
+    "framework/common/aimec_task_store.py": {
+      "sha256": "3c62da82c4d9893a97ef34765b059c7ed905d9e0d03a6d71acb395abffdb2379",
+      "upstream_git_blob": "3fb8fee3ee030f50eb2f476820397ae4c611514f",
+      "status": "unchanged"
+    },
+    "framework/deploy/bc092/Caddyfile": {
+      "sha256": "952d94385ee2bd39d17aca6d9c573a0d6d1deda59537414e196540cacbf63a15",
+      "upstream_git_blob": "8bafa7bf8af5960f88f5acf72460e847d6657f05",
+      "status": "unchanged"
+    },
+    "framework/deploy/bc092/build-identity.json": {
+      "sha256": "3f5b348adf5b8dd93f983839252aff10a8d8c351b1e6839a420559b30df93078",
+      "upstream_git_blob": "2d48e0319ce2e79387191ee648566c3a17819e56",
+      "status": "unchanged"
+    },
+    "framework/registry/capabilities/ai-opportunity-analyst.agent.json": {
+      "sha256": "9748a2d3f14dda2eda93b2215e9a59c915714286330c97cbbca97c60d36612c0",
+      "upstream_git_blob": "df3aa384aed81bd8f126d7ee48e5f9875dbad001",
+      "status": "unchanged"
+    },
+    "framework/registry/capabilities/ai-solution-architect.agent.json": {
+      "sha256": "98ed7fd7c277ffd5d54b90a0ba5944d4cefaefcfa7ba7d0e9e88acc162bce0cb",
+      "upstream_git_blob": "6b91bb8bfba98d87dd8854507a8ef0b8ae51e3ca",
+      "status": "unchanged"
+    },
+    "framework/registry/capabilities/business-diagnostics.tool.json": {
+      "sha256": "31a3063ed6c7b815bdfc1135a2791de45c69827b79a01e7438877a86b31e9523",
+      "upstream_git_blob": "0d302afb5f1527f35f55b895db4c7b63bb7d8a65",
+      "status": "unchanged"
+    },
+    "framework/scripts/bootstrap_bc094_demo.py": {
+      "sha256": "bed702434e773256076bb48254bd391783c50878eb4dd489be22052ca77b5569",
+      "upstream_git_blob": "816e840b96b837a882ec26a3019d43e111a19034",
+      "status": "unchanged"
+    },
+    "framework/services/business_advisory/Dockerfile.demo": {
+      "sha256": "b892035f057c3cc67868a99ea46d2ceff13a984b34d45ea555a2ef4978630380",
+      "upstream_git_blob": "fdc741bca70cb2e53d40c6b6763167cdc581abf4",
+      "status": "unchanged"
+    },
+    "framework/services/business_advisory/Dockerfile.demo.dockerignore": {
+      "sha256": "61278f9ef62a74462d361f6d919e10069269fbb5b01a76c15a0ee9406de48040",
+      "upstream_git_blob": "0f1b948d07f46f2d418f83f446f8220753e96a38",
+      "status": "unchanged"
+    },
+    "framework/services/business_advisory/capability.py": {
+      "sha256": "58db7d00d8996de12273eba31f31dde5595ae3b74aa550a5fccefa27921dc5bc",
+      "upstream_git_blob": "baf620b5a6c0b5566ddc343555ce0c8a57527128",
+      "status": "unchanged"
+    },
+    "framework/services/business_advisory/server.py": {
+      "sha256": "9d934d19eb6f8fdafbd82d1cce5774a3f65beebb7dc34b600f78ff8ed5a1f3ed",
+      "upstream_git_blob": "303093aa3ed0f6a1991c8eb214c225bec94f4e60",
+      "status": "unchanged"
+    },
+    "framework/services/capability_registry/Dockerfile.business-demo": {
+      "sha256": "fe08b2d7475c3b900dfd27f766dbe0d7baddf9e39182622d6b23240b5ac21413",
+      "upstream_git_blob": "4ca226baabdda6c1415f97fd0a307bd607478660",
+      "status": "unchanged"
+    },
+    "framework/services/capability_registry/server.py": {
+      "sha256": "bdca070a23fd17e556a7e4efc43adb52e0fea41b2b65d149a0cc1bd00360d087",
+      "upstream_git_blob": "7f34e6d20f23988b72a3a2a4b52660e13f88fb33",
+      "status": "unchanged"
+    },
+    "framework/services/operator_ui/Dockerfile.demo": {
+      "sha256": "1a5fe2971503419b55b02c8dfb851f8eec000a3cd73f6c746fe67bae9eb7c54a",
+      "upstream_git_blob": "224a940ce1985c400d977fa4d0222b17b48c535e",
+      "status": "modified_for_public_export"
+    },
+    "framework/services/operator_ui/capability_jobs.py": {
+      "sha256": "bf157138c227aff1cb451d96cea85e6e444e0142cfdafa9433e15375db6fbd06",
+      "upstream_git_blob": "0d21487246299db1360c5dee1010c97cf82d77f7",
+      "status": "unchanged"
+    },
+    "framework/services/operator_ui/demo_server.py": {
+      "sha256": "40bbf5d7b77f7138e8ba804691745c84466307dced1720e1db71e5180ba89fa8",
+      "upstream_git_blob": "a58f959e41304c9ff7cfb6965f574b98c7572f61",
+      "status": "unchanged"
+    },
+    "framework/services/operator_ui/public/demo.css": {
+      "sha256": "3fd7d9f64b693526087e501d16f406cf76d7f2494ea23979945f7fed07720590",
+      "upstream_git_blob": "2d1b5114f1ee11a86e6c6da973677e814cd195e4",
+      "status": "unchanged"
+    },
+    "framework/services/operator_ui/public/demo.html": {
+      "sha256": "07ca235fb5cc3db8a2dada9ad66633e55fb8b61e2f0a62fe0f1f67b5ba236a49",
+      "upstream_git_blob": "8e37a79b5335e0e827f1ff27cf77a3025fbfe833",
+      "status": "unchanged"
+    },
+    "framework/services/operator_ui/public/demo.js": {
+      "sha256": "f19a0f824548072ab0136d579cbbfb97d35fed862209f918af827519a310c0e3",
+      "upstream_git_blob": "136a9e48a7bb59efce69d62903953e15af4062f1",
+      "status": "unchanged"
+    },
+    "framework/services/operator_ui/public/webmcp.js": {
+      "sha256": "dd18da88cbd90b8ce9916d7e1a24c61d73af4ef69ec51bf93dd66357956549f5",
+      "upstream_git_blob": "25a5f351a4a2bed6590000aa9855b1ca367efc39",
+      "status": "unchanged"
+    },
+    "framework/services/operator_ui/webmcp.py": {
+      "sha256": "bca45ad92aa4c3a23061fb3e529e147b7cdabb3c3b1715178f53a56bbcbec8f2",
+      "upstream_git_blob": "31cdf886267c328adfa9df149afc5a6836072ca6",
+      "status": "unchanged"
+    },
+    "framework/tests/test_bc094_business_agents.py": {
+      "sha256": "ac6961d15ccce5e694b8f533c7753fba8bab760271a90881ca7158c1fc3fe6d8",
+      "upstream_git_blob": "df3193cd76716518ecac5395afb4640551452091",
+      "status": "unchanged"
+    },
+    "runtime-files.json": {
+      "sha256": "7eb0aa3a5ad82dc3770ae1899ebbe703f1023a0e0f453550961433f7546334f7",
+      "upstream_git_blob": null,
+      "status": "added_for_public_export"
+    },
+    "scripts/demo.sh": {
+      "sha256": "b34756cc61848484815f0403d7954149333fdf2477f7e35e18ace79093363b9b",
+      "upstream_git_blob": null,
+      "status": "added_for_public_export"
+    },
+    "scripts/prepare_https.py": {
+      "sha256": "23a7f45aeaf47891e7460bdc40c7e731ec89b8d1aa9435dab27d597b6413a38b",
+      "upstream_git_blob": null,
+      "status": "added_for_public_export"
+    },
+    "tests/test_public_export.py": {
+      "sha256": "5282482ae4ddaf254ae42d868be5195fef7ec229f6efdf34ead8e3a9f4e45b3e",
+      "upstream_git_blob": null,
+      "status": "added_for_public_export"
+    }
+  }
+}
+

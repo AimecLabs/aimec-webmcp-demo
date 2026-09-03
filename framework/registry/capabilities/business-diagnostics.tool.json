@@ -1,0 +1,196 @@
+{
+  "schema_version": "0.1",
+  "kind": "tool",
+  "identity": {
+    "id": "aimec.business-diagnostics",
+    "display_name": "AIMEC Business Diagnostics",
+    "description": "Five directional AIMEC planning tools for AI ROI, operating cost, data readiness, agentic readiness and overall AI readiness."
+  },
+  "version": "0.1.0",
+  "provenance": {
+    "repository": "https://github.com/AimecLabs/aimec_local_agent_harness",
+    "commit": "baedf5710d29f121d4593c1926f52f444e212fcd",
+    "publisher": "AIMEC"
+  },
+  "capabilities": [
+    "business.ai_roi",
+    "business.ai_cost",
+    "business.data_readiness",
+    "business.agentic_readiness",
+    "business.ai_readiness"
+  ],
+  "transport": {
+    "protocol": "mcp",
+    "endpoint_env": "AIMEC_CAPABILITY_BUSINESS_DIAGNOSTICS_URL",
+    "health_path": "/health"
+  },
+  "operations": [
+    {
+      "id": "business.calculate_ai_roi",
+      "action": "invoke",
+      "capability": "business.ai_roi",
+      "input_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["employees", "hours_per_week", "hourly_cost", "automation_percentage"],
+        "properties": {
+          "employees": {"type": "integer", "description": "Employees who perform the task"},
+          "hours_per_week": {"type": "number", "description": "Total weekly hours per employee spent on the task"},
+          "hourly_cost": {"type": "number", "description": "Average loaded hourly cost in USD"},
+          "automation_percentage": {"type": "number", "description": "Estimated percent of task effort AI can automate, 0-100"},
+          "monthly_ai_cost": {"type": "number", "description": "Optional monthly AI/tooling operating cost in USD"},
+          "implementation_cost": {"type": "number", "description": "Optional one-time implementation cost in USD"}
+        }
+      },
+      "output_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["annual_labor_cost", "annual_gross_savings", "annual_ai_cost", "annual_net_benefit", "monthly_net_benefit", "payback_months", "directional_notice"],
+        "properties": {
+          "annual_labor_cost": {"type": "number"},
+          "annual_gross_savings": {"type": "number"},
+          "annual_ai_cost": {"type": "number"},
+          "annual_net_benefit": {"type": "number"},
+          "monthly_net_benefit": {"type": "number"},
+          "payback_months": {"type": ["number", "null"]},
+          "directional_notice": {"type": "string"}
+        }
+      },
+      "timeout_seconds": 5
+    },
+    {
+      "id": "business.estimate_ai_cost",
+      "action": "invoke",
+      "capability": "business.ai_cost",
+      "input_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["users", "requests_per_user_per_day", "tokens_per_request", "cost_per_million_tokens", "monthly_infrastructure_cost"],
+        "properties": {
+          "users": {"type": "integer"},
+          "requests_per_user_per_day": {"type": "number"},
+          "tokens_per_request": {"type": "integer"},
+          "cost_per_million_tokens": {"type": "number"},
+          "monthly_infrastructure_cost": {"type": "number"}
+        }
+      },
+      "output_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["monthly_requests", "monthly_tokens", "monthly_model_cost", "monthly_infrastructure_cost", "monthly_total_cost", "annual_total_cost", "directional_notice"],
+        "properties": {
+          "monthly_requests": {"type": "number"},
+          "monthly_tokens": {"type": "number"},
+          "monthly_model_cost": {"type": "number"},
+          "monthly_infrastructure_cost": {"type": "number"},
+          "monthly_total_cost": {"type": "number"},
+          "annual_total_cost": {"type": "number"},
+          "directional_notice": {"type": "string"}
+        }
+      },
+      "timeout_seconds": 5
+    },
+    {
+      "id": "business.assess_data_readiness",
+      "action": "invoke",
+      "capability": "business.data_readiness",
+      "input_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["crm_data_quality", "documentation_quality", "api_availability", "data_accuracy", "security_controls", "data_ownership"],
+        "properties": {
+          "crm_data_quality": {"type": "integer", "description": "CRM and customer data quality"},
+          "documentation_quality": {"type": "integer", "description": "Internal documentation quality"},
+          "api_availability": {"type": "integer", "description": "API and integration availability"},
+          "data_accuracy": {"type": "integer", "description": "Overall data accuracy"},
+          "security_controls": {"type": "integer", "description": "Security and access controls"},
+          "data_ownership": {"type": "integer", "description": "Clear data ownership"}
+        }
+      },
+      "output_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["score", "band", "priority_gaps", "dimension_scores", "directional_notice"],
+        "properties": {
+          "score": {"type": "integer"},
+          "band": {"type": "string"},
+          "priority_gaps": {"type": "array", "maxItems": 6, "items": {"type": "string"}},
+          "dimension_scores": {"type": "object"},
+          "directional_notice": {"type": "string"}
+        }
+      },
+      "timeout_seconds": 5
+    },
+    {
+      "id": "business.assess_agentic_readiness",
+      "action": "invoke",
+      "capability": "business.agentic_readiness",
+      "input_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["api_access", "process_repeatability", "approval_points", "knowledge_documentation", "business_data_access", "automation_maturity"],
+        "properties": {
+          "api_access": {"type": "integer", "description": "Systems expose APIs agents can use"},
+          "process_repeatability": {"type": "integer", "description": "Processes are documented and repeatable"},
+          "approval_points": {"type": "integer", "description": "Human approval points are clearly defined"},
+          "knowledge_documentation": {"type": "integer", "description": "Company knowledge is documented"},
+          "business_data_access": {"type": "integer", "description": "Agents can access useful business data"},
+          "automation_maturity": {"type": "integer", "description": "Existing automation maturity"}
+        }
+      },
+      "output_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["score", "band", "priority_gaps", "dimension_scores", "directional_notice"],
+        "properties": {
+          "score": {"type": "integer"},
+          "band": {"type": "string"},
+          "priority_gaps": {"type": "array", "maxItems": 6, "items": {"type": "string"}},
+          "dimension_scores": {"type": "object"},
+          "directional_notice": {"type": "string"}
+        }
+      },
+      "timeout_seconds": 5
+    },
+    {
+      "id": "business.assess_ai_readiness",
+      "action": "invoke",
+      "capability": "business.ai_readiness",
+      "input_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["strategy_clarity", "data_quality_accessibility", "process_documentation", "tools_integrations", "security_privacy", "team_readiness"],
+        "properties": {
+          "strategy_clarity": {"type": "integer", "description": "AI strategy clarity"},
+          "data_quality_accessibility": {"type": "integer", "description": "Data quality and accessibility"},
+          "process_documentation": {"type": "integer", "description": "Process documentation"},
+          "tools_integrations": {"type": "integer", "description": "Existing tools and integrations"},
+          "security_privacy": {"type": "integer", "description": "Security and privacy readiness"},
+          "team_readiness": {"type": "integer", "description": "Team readiness"}
+        }
+      },
+      "output_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["score", "band", "priority_gaps", "dimension_scores", "directional_notice"],
+        "properties": {
+          "score": {"type": "integer"},
+          "band": {"type": "string"},
+          "priority_gaps": {"type": "array", "maxItems": 6, "items": {"type": "string"}},
+          "dimension_scores": {"type": "object"},
+          "directional_notice": {"type": "string"}
+        }
+      },
+      "timeout_seconds": 5
+    }
+  ],
+  "permissions": {"network": "none", "filesystem": "none", "actions": ["read", "analyze"]},
+  "risk": {"level": "low", "human_gate": "review", "irreversible": false},
+  "credentials": {"required": false, "env_refs": []},
+  "data_policy": {"input_classes": ["public"], "output_classes": ["local"], "retention": "ephemeral", "crosses_node_boundary": false},
+  "health": {"mode": "transport", "interval_seconds": 30},
+  "delegation": {"accepts_tasks": false, "can_delegate": false, "max_hops": 0},
+  "evaluation": {"suite": "bc094-business-agent-demo", "passed": true, "evidence": ["urn:aimec:bc094:local-acceptance"]},
+  "approval": {"state": "submitted"},
+  "commercial": {"source": "https://aimec.io/ai-business-tools/", "website_tools": ["AI ROI Calculator", "AI Cost Calculator", "Data Readiness", "Agentic Score", "AI Readiness Assessment"], "positioning": "directional business planning diagnostics"}
+}

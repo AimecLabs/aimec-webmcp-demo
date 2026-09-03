@@ -1,0 +1,15 @@
+.git
+.env
+.env.*
+.releases
+**/__pycache__
+**/*.pyc
+**/*.sqlite*
+**/*.db
+**/*.pem
+**/*.key
+**/*.log
+node_modules
+docs
+tests
+framework/tests

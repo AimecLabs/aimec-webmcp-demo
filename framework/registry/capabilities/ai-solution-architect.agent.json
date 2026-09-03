@@ -1,0 +1,33 @@
+{
+  "schema_version": "0.1",
+  "kind": "agent",
+  "identity": {"id": "aimec.ai-solution-architect", "display_name": "AIMEC AI Solution Architect", "description": "Tool-grounded solution architect that turns a qualified AI opportunity into a bounded implementation architecture and operating-cost view."},
+  "version": "0.1.0",
+  "provenance": {"repository": "https://github.com/AimecLabs/aimec_local_agent_harness", "commit": "baedf5710d29f121d4593c1926f52f444e212fcd", "publisher": "AIMEC"},
+  "capabilities": ["business.design_solution"],
+  "transport": {"protocol": "a2a", "endpoint_env": "AIMEC_CAPABILITY_AI_SOLUTION_ARCHITECT_URL", "health_path": "/health"},
+  "operations": [{
+    "id": "business.design_solution", "action": "delegate", "capability": "business.design_solution", "timeout_seconds": 420,
+    "input_schema": {
+      "type": "object", "additionalProperties": false,
+      "required": ["business_problem", "cost", "data_readiness", "agentic_readiness"],
+      "properties": {
+        "business_problem": {"type": "string", "maxLength": 4000},
+        "cost": {"type": "object", "additionalProperties": false, "required": ["users", "requests_per_user_per_day", "tokens_per_request", "cost_per_million_tokens", "monthly_infrastructure_cost"], "properties": {"users": {"type": "integer"}, "requests_per_user_per_day": {"type": "number"}, "tokens_per_request": {"type": "integer"}, "cost_per_million_tokens": {"type": "number"}, "monthly_infrastructure_cost": {"type": "number"}}},
+        "data_readiness": {"type": "object", "additionalProperties": false, "required": ["crm_data_quality", "documentation_quality", "api_availability", "data_accuracy", "security_controls", "data_ownership"], "properties": {"crm_data_quality": {"type": "integer"}, "documentation_quality": {"type": "integer"}, "api_availability": {"type": "integer"}, "data_accuracy": {"type": "integer"}, "security_controls": {"type": "integer"}, "data_ownership": {"type": "integer"}}},
+        "agentic_readiness": {"type": "object", "additionalProperties": false, "required": ["api_access", "process_repeatability", "approval_points", "knowledge_documentation", "business_data_access", "automation_maturity"], "properties": {"api_access": {"type": "integer"}, "process_repeatability": {"type": "integer"}, "approval_points": {"type": "integer"}, "knowledge_documentation": {"type": "integer"}, "business_data_access": {"type": "integer"}, "automation_maturity": {"type": "integer"}}},
+        "analyst_context": {"type": "string", "maxLength": 4000}
+      }
+    },
+    "output_schema": {"type": "object", "additionalProperties": false, "required": ["model", "agent", "tool_calls", "architecture", "operating_cost", "directional_notice"], "properties": {"model": {"type": "string"}, "agent": {"type": "string"}, "tool_calls": {"type": "array", "maxItems": 4, "items": {"type": "object"}}, "architecture": {"type": "object"}, "operating_cost": {"type": "object"}, "directional_notice": {"type": "string"}}}
+  }],
+  "permissions": {"network": "restricted", "filesystem": "none", "actions": ["read", "analyze", "delegate"]},
+  "risk": {"level": "low", "human_gate": "review", "irreversible": false},
+  "credentials": {"required": false, "env_refs": []},
+  "data_policy": {"input_classes": ["public"], "output_classes": ["local"], "retention": "ephemeral", "crosses_node_boundary": true},
+  "health": {"mode": "transport", "interval_seconds": 30},
+  "delegation": {"accepts_tasks": true, "can_delegate": false, "max_hops": 0},
+  "evaluation": {"suite": "bc094-business-agent-demo", "passed": true, "evidence": ["urn:aimec:bc094:local-acceptance"]},
+  "approval": {"state": "submitted"},
+  "commercial": {"role": "AI solution architecture", "model_runtime": "local Ollama"}
+}
