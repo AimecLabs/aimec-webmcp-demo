@@ -1,6 +1,10 @@
 # AIMEC Alpha — WebMCP Business-Agent Demo
 
-[Live demo](https://demo.aimec.io) · [MIT license](LICENSE) · [Judge walkthrough](docs/JUDGE_GUIDE.md) · [What is new](PROVENANCE.md)
+> Part of AimecLabs — infrastructure for local AI, capability orchestration, governed execution, and interoperable agents.
+
+A public reference implementation of the AimecLabs approach to interoperable, inspectable AI agents. This demo shows how a browser agent can discover typed capabilities, delegate work, retrieve durable results, and inspect execution evidence through WebMCP without relying on UI scraping.
+
+AimecLabs focuses on four infrastructure layers: local AI, capability orchestration, governed execution, and agent interoperability. This repository demonstrates the interoperability layer against a deliberately narrow business-automation workflow.
 
 Turn a synthetic business automation opportunity into a structured assessment:
 deterministic ROI and readiness diagnostics, a local-model opportunity analysis,
